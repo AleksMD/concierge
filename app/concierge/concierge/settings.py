@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mycore',
+    'concierge'
 ]
 
 MIDDLEWARE = [
@@ -86,8 +87,8 @@ DATABASES = {
         'TEST': {
             'HOST': 'db',
             'PORT': 5432,
-            'NAME': 'concierge_test_db',
-            'USER': 'concierge_dev',
+            'NAME': 'test_concierge_db',
+            'USER': 'concierge_dev'
         }
     }
 }

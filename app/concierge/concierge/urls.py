@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from .views import health_check
+from mycore.views import health_check
 
 
 static_patterns = static(settings.MEDIA_URL,

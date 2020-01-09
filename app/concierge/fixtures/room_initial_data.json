@@ -1,0 +1,32 @@
+[
+    {
+        "model": "mycore.room",
+        "pk": 30,
+        "fields":{
+            "number": 13,
+            "tenant": null,
+            "max_guests": null,
+            "status": "free"
+        }
+    }, 
+    {
+        "model": "mycore.room",
+        "pk": 100,
+        "fields":{
+            "number": 34,
+            "tenant": null,
+            "max_guests": 10,
+            "status": "free"
+        }
+    },
+{
+        "model": "mycore.room",
+        "pk": 101,
+        "fields":{
+            "number": 33,
+            "tenant": null,
+            "max_guests": 22,
+            "status": "free"
+        }
+    }
+]
