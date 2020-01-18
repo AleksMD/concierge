@@ -75,29 +75,35 @@ class Journal(models.Model):
     guests = models.IntegerField(default=0)
     key_is_kept = models.BooleanField(default=True)
 
+
+    def make_room_free(self):
+        self.key_is_kept = True
+        self.key_is_back = key_transition_datetime()
+        self.key_on_hands = None
+        room.status = 'free'
+        room.tenant = self.tenant
+        room.save()
+
+    def room_engaged_with_new_tenant(self):
+        self.key_is_kept = False
+        self.key_on_hands = key_transition_datetime()
+        room.status = 'engaged'
+        room.tenant = self.tenant
+        room.save()
+
     def save(self, *args, **kwargs):
         room = self.room
         max_guests = room.max_guests
-        max_guests = self.guests
         if max_guests and self.guests > max_guests:
-            raise  ValueError(f'Maximal number of guests for this room is'
-                              f'{max_guests}')
-        elif self.key_is_kept and self.tenant:
-            self.key_is_kept = False
-            self.key_on_hands = key_transition_datetime()
-            room.status = 'engaged'
-            room.tenant = self.tenant
-            room.save()
+            return (f'Maximal number of guests for this room is'
+                    f'{max_guests}')
+        if not self.key_is_kept and not self.tenant:
+            self.room_engaged_with_new_tenant()
         elif not self.key_is_kept and not self.tenant:
-            self.key_is_kept = True
-            self.key_is_back = key_transition_datetime()
-            self.key_on_hands = None
-            room.status = 'free'
-            room.tenant = self.tenant
-            room.save()
+            self.make_room_free()
         else:
-            raise ValueError('You try to do incompatible actions. Please check'
-                             'all fields for correctness')
+            return ('You tried to do incompatible actions. Please check'
+                    'all fields for correctness')
         super().save(*args, **kwargs)
 
 
