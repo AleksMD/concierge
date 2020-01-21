@@ -10,15 +10,11 @@
     <form method="post">
         {% csrf_token %}
         <label>Please enter tenant first name:</label>
-        <input type="text" name="tenant_first_name"></br>
+        <input type="text" name="tenant__first_name"></br>
         <label>Please enter tenant last name:</label>
-        <input type="text" name="tenant_last_name"></br>
-        <label> Please enter number of guests:</label>
-        <input type="text" name="guests"></br>
+        <input type="text" name="tenant__last_name"></br>
         <label> Please enter number of room:</label>
-        <input type="text" name="room_number"></br>
-        <label> Please enter comments if any:</label>
-        <input type="text" name="comments"></br>
+        <input type="number" name="room__number"></br>
         <input type="submit"/>
         <input type="reset"/>
     </form>
