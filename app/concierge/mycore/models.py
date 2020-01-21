@@ -65,6 +65,10 @@ class Room(models.Model):
     max_guests = models.IntegerField(null=True)
     status = models.CharField(max_length=10, default='free')
 
+    def save(self, *args, **kwargs):
+        self.status = 'engaged' if self.tenant else 'free'
+        super().save(*args, **kwargs)
+
 
 class Journal(models.Model):
     key_on_hands = models.DateTimeField(null=True)
@@ -75,29 +79,25 @@ class Journal(models.Model):
     guests = models.IntegerField(default=0)
     key_is_kept = models.BooleanField(default=True)
 
-
     def make_room_free(self):
         self.key_is_kept = True
         self.key_is_back = key_transition_datetime()
         self.key_on_hands = None
-        room.status = 'free'
-        room.tenant = self.tenant
-        room.save()
+        self.room.tenant = self.tenant
+        self.room.save()
 
     def room_engaged_with_new_tenant(self):
         self.key_is_kept = False
         self.key_on_hands = key_transition_datetime()
-        room.status = 'engaged'
-        room.tenant = self.tenant
-        room.save()
+        self.room.tenant = self.tenant
+        self.room.save()
 
     def save(self, *args, **kwargs):
-        room = self.room
-        max_guests = room.max_guests
+        max_guests = self.room.max_guests
         if max_guests and self.guests > max_guests:
             return (f'Maximal number of guests for this room is'
                     f'{max_guests}')
-        if not self.key_is_kept and not self.tenant:
+        if self.key_is_kept and self.tenant:
             self.room_engaged_with_new_tenant()
         elif not self.key_is_kept and not self.tenant:
             self.make_room_free()
@@ -105,5 +105,3 @@ class Journal(models.Model):
             return ('You tried to do incompatible actions. Please check'
                     'all fields for correctness')
         super().save(*args, **kwargs)
-
-
