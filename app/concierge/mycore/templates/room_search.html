@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block header %} 
        <div class="container-md pt-3 my-3 border bg-dark text-white">
-            <h1>Update Hostel Journal!</h1>
+            <h1>Search for room.</h1>
             <p>Please fill in all neccessary fields.</p>
         </div>
 {% endblock %}
@@ -9,16 +9,11 @@
 <div class="container-md pt-3 my-3 border bg-primary text-white">
     <form method="post">
         {% csrf_token %}
-        <label>Please enter tenant first name:</label>
-        <input type="text" name="tenant_first_name"></br>
-        <label>Please enter tenant last name:</label>
-        <input type="text" name="tenant_last_name"></br>
-        <label> Please enter number of guests:</label>
-        <input type="text" name="guests"></br>
-        <label> Please enter number of room:</label>
-        <input type="text" name="room_number"></br>
-        <label> Please enter comments if any:</label>
-        <input type="text" name="comments"></br>
+        <label>Room number</label>
+        <input type="text" name="number"></br>
+        <label>Choose room status</label>
+        <input type="radio" name="status" value="free">Free</br>
+        <input type="radio" name="status" value="engaged">Engaged</br>
         <input type="submit"/>
         <input type="reset"/>
     </form>

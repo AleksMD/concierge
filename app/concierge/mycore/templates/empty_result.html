@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+            <h1>Hostel Journal!</h1>
+            <p>Below is a result of your query.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    {% if err_message %}
+    <span class="text-warning">{{ err_message }}</span>
+    {% endif %}
+   </div>
+{% endblock %}

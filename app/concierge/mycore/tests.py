@@ -53,6 +53,3 @@ class JournalModelTests(TestCase):
         self.assertIsNone(journal.key_is_back)
         self.assertIsNotNone(journal.key_on_hands)
         self.assertFalse(journal.key_is_kept)
-        journal.guests = 5
-        with self.assertRaises(ValueError):
-            journal.save()

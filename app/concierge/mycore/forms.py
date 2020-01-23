@@ -1,6 +1,6 @@
 from django import forms
 from mycore.models import Tenant, Room, Journal
-from django.core.exceptions import ObjectDoesNotExist
+# from django.core.exceptions import ObjectDoesNotExist
 
 
 class TenantCreateForm(forms.Form):
@@ -12,7 +12,8 @@ class TenantCreateForm(forms.Form):
     notes = forms.CharField(required=False)
 
     def save_tenant(self):
-        fields = {k: v for k, v in self.data.items() if v}
+        fields = {k: v for k, v in self.data.items()
+                  if not k.endswith('token') and v}
         tenant = Tenant(**fields)
         tenant.save()
 
@@ -24,7 +25,8 @@ class TenantSearchForm(forms.Form):
     phone = forms.CharField(required=False)
 
     def find_tenant(self):
-        filter_keys = {k: v for k, v in self.data.items() if v}
+        filter_keys = {k: v for k, v in self.data.items()
+                       if not k.endswith('token') and v}
         tenant = Tenant.objects.filter(**filter_keys).all()
         return tenant
 
@@ -34,15 +36,20 @@ class RoomCreateForm(forms.Form):
     max_guests = forms.IntegerField(required=False)
 
     def save_room(self):
-        room = Room(**self.data)
+        fields = {k: v for k, v in self.data.items()
+                  if not k.endswith('token') and v}
+        room = Room(**fields)
         room.save()
 
 
 class RoomSearchForm(forms.Form):
-    number = forms.IntegerField(required=True)
+    number = forms.IntegerField(required=False)
+    status = forms.CharField(required=False)
 
     def find_room(self):
-        room = Room.objects.get(number=self.data['number'])
+        filter_keys = {k: v for k, v in self.data.items()
+                       if v and not k.endswith('token')}
+        room = Room.objects.filter(**filter_keys).all()
         return room
 
 
