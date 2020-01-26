@@ -15,11 +15,24 @@ from mycore.forms import (JournalUpdateForm,
                           RoomCreateForm,
                           RoomSearchForm,
                           JournalSearchForm)
+from django.views.decorators.cache import cache_page
+from django.conf import settings
+from django.core.cache import cache
+from django.contrib.auth import get_user_model
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INVALID_FORM_MESSAGE = ("You entered inappropriate data in form's fields."
                         "Plase try again if neccessary.")
+
+
+def get_user():
+    ukey = 'users_all'
+    users = cache.get(ukey)
+    if not users:
+        users = get_user_model().objects.all()
+        cache.set(ukey, users, settings.CACHE_TTL)
+    return users
 
 
 def health_check(request):
@@ -30,6 +43,7 @@ def index(request):
     return HttpResponse(render_to_string('index.html', {'title': 'concierge'}))
 
 
+@cache_page(settings.CACHE_TTL)
 def api_entry_page(request):
     return HttpResponse(render_to_string('api_entry.html'))
 
