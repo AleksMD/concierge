@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mycore',
+    'concierge'
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'concierge.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'mycore', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,13 +82,13 @@ DATABASES = {
         'NAME': 'concierge_db',
         'USER': 'concierge_dev',
         'PASSWORD': 'simplepass',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432,
         'TEST': {
-            'HOST': 'db',
+            'HOST': 'localhost',
             'PORT': 5432,
-            'NAME': 'concierge_test_db',
-            'USER': 'concierge_dev',
+            'NAME': 'test_concierge_db',
+            'USER': 'concierge_dev'
         }
     }
 }

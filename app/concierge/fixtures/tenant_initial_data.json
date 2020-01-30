@@ -1,0 +1,29 @@
+[
+    {
+    "model": "mycore.tenant",
+    "pk":30,
+    "fields":{
+        "first_name": "Aleks",
+        "last_name": "Smith",
+        "date_of_birth": "1900-01-01",
+        "phone": "1-300-434-30-90"}
+    },
+    {
+    "model": "mycore.tenant",
+    "pk":40,
+    "fields":{
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "date_of_birth": "1940-02-01",
+        "phone": "3-200-734-60-80"}
+    },
+    {
+    "model": "mycore.tenant",
+    "pk":80,
+    "fields":{
+        "first_name": "Alice",
+        "last_name": "Lee",
+        "date_of_birth": "1990-11-01",
+        "phone": "6-900-034-30-90"}
+    }
+]
