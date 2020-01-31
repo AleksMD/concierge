@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+           <h1>Tenant: {{tenant.first_name }} {{ tenant.last_name}}</h1>
+            <p>Description of a tenant.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    <table class="table text-white">
+        <tr>
+            <td>Tenant first name</td>
+            <td>Tenant last name</td>
+            <td>Tenant date of birth</td>
+            <td>Tenant phone</td>
+            <td>Tenant photo</td>
+            <td>Tenant notes</td>
+        </tr>
+        <tr>
+            <td>{{ tenant.first_name }}</td>
+            <td>{{ tenant.last_name }}</td>
+            <td>{{ tenant.date_of_birth }}</td>
+            <td>{{ tenant.phone }}</td>
+            <td>{{ tenant.photo }}</td>
+            <td>{{ tenant.notes }}</td>
+
+        </tr>
+    </table>
+    
+    </div>
+{% endblock %}

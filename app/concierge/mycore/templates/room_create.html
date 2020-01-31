@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+            <h1>Add new room!</h1>
+            <p>Please fill in all neccessary fields.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    <form method="post">
+        {% csrf_token %}
+        <label> Please enter a maximal number of guests:</label>
+        <input type="text" name="max_guests"></br>
+        <label> Please enter number of room:</label>
+        <input type="text" name="number"></br>
+        <input type="submit"/>
+        <input type="reset"/>
+    </form>
+</div>
+{% endblock %}

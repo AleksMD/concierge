@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+            <h1>Tenants!</h1>
+            <p>List of all tenants in the hostel.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container pt-3 my-6 border bg-primary text-white">
+    <table class="table text-white">
+        <tr>
+            <td>Tenant first name</td>
+            <td>Tenant last name</td>
+            <td>Tenant date of birth</td>
+            <td>Tenant phone</td>
+            <td>Tenant photo</td>
+            <td>Notes</td>
+        </tr>
+        {% for tenant in tenant_list %}
+        <tr>
+            <td>{{ tenant.first_name }}</td>
+            <td>{{ tenant.last_name }}</td>
+            <td>{{ tenant.date_of_birth|default:"None" }}</td>
+            <td>{{ tenant.phone|default:"None" }}</td>
+            <td>{{ tenant.photo|default:"None" }}</td>
+            <td>{{ tenant.notes|default:"None" }}</td>
+        </tr>
+        {% endfor %}
+        
+    </table>
+</div>
+{% endblock %}

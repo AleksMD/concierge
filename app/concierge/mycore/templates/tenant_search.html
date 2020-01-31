@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+            <h1>Search tenant</h1>
+            <p>Please fill in all neccessary fields.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    <form method="post">
+        {% csrf_token %}
+        <label>Please enter tenant first name:</label>
+        <input type="text" name="first_name"></br>
+        <label>Please enter tenant last name:</label>
+        <input type="text" name="last_name"></br>
+        <label>Please enter tenant birthday(optional):</label>
+        <input type="date" name="date_of_birth"></br>
+        <label>Please enter tenant phone(optional):</label>
+        <input type="text" name="phone"></br>
+        <input type="submit"/>
+        <input type="reset"/>
+    </form>
+</div>
+{% endblock %}

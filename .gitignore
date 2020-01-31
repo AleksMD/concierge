@@ -8,3 +8,4 @@ media/
 __pycache__/
 .idea/
 django_env
+migrations/

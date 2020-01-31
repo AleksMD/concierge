@@ -17,13 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-
-from mycore.views import (health_check,
-                          index,
-                          api_serializer,
-                          JournalView,
-                          journal_updated)
-
+import mycore.views as views
 
 static_patterns = static(settings.MEDIA_URL,
                          document_root=settings.MEDIA_ROOT) + \
@@ -32,10 +26,30 @@ static_patterns = static(settings.MEDIA_URL,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/<str:model_type>/<int:model_id>', api_serializer,
+    path('api/<str:model_type>/<int:model_id>', views.model_serialized_view,
          name='api'),
-    path('journal/', JournalView.as_view(), name='journal'),
-    path('journal_updated/', journal_updated, name='journal_updated'),
-    path('', index, name='index'),
-    path('healthcheck/', health_check, name='health_check'),
+    path('api_entry/', views.api_entry_page, name='api_entry_page'),
+    path('room_create/', views.RoomCreateView.as_view(),
+         name='room_create'),
+    path('room_search/', views.RoomSearchView.as_view(),
+         name='room_search'),
+    path('tenant_search/', views.TenantSearchView.as_view(),
+         name='tenant_search'),
+    path('tenant_create/', views.TenantCreateView.as_view(),
+         name='tenant_create'),
+    path('room_detailed/<int:pk>', views.RoomDetailView.as_view(),
+         name='room_detail'),
+    path('tenant_detailed/<int:pk>', views.TenantDetailView.as_view(),
+         name='tenant_detail'),
+    path('success/<str:message>', views.success, name='success'),
+    path('journal_search/', views.JournalSearchView.as_view(),
+         name='journal_search'),
+    path('journal_update/', views.JournalView.as_view(),
+         name='journal_update'),
+    path('room_list/', views.RoomListView.as_view(),
+         name='room_list'),
+    path('tenants_list/', views.TenantListView.as_view(),
+         name='tenants_list'),
+    path('', views.index, name='index'),
+    path('healthcheck/', views.health_check, name='health_check'),
 ] + static_patterns

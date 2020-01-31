@@ -18,21 +18,29 @@
         </div>
         {% endblock %}
         {% block main %}
-        <div class="container-md pt-3 my-3 border bg-primary text-white
-            links-white">
-            <p><a class="text-white bg-dark" href="/room_create">Add room!</a></p>
-            <p><a class="text-white bg-dark" href="/tenant_create">Add new tenant!</a></p>
-            <p><a class="text-white bg-dark" href="/journal_update">Update journal!</a></p>
-        <p><a class="text-white bg-dark" href="/room_search">Find room!</a></p>
-         <p><a class="text-white bg-dark" href="/tenant_search">Find tenant!</a></p>
-        <p><a class="text-white bg-dark" href="/tenants_list">All tenants!</a></p>
-        <p><a class="text-white bg-dark" href="/room_list">All rooms!</a></p>
-        <p><a class="text-white bg-dark" href="/api/entry_page">Concierge Api!</a></p>
+        <div class="container-md pt-3 my-3 border bg-primary text-white links-white">
+            <h3><p>Concierge Api!</p></h3>
+            <h2>
+                <p>
+                    To get information is you are looking for simply use the following syntax:
+                </p>
+            </h2>
+            <p>
+            /api/model_type/model_id</br>
+            Example:</br>
+            http://hostname/api/tenant/1
+            </p>
+            <p>
+                You can pass "format" argument in query string(optional).
+                Example:</br>
+                http://hostname/api/tenant/1?format=xml</br>
+                JSON is a default one!
+            </p>
+            
+            
+            <p><a class="text-white bg-dark" href="/">Home!</a></p>
         </div>
         {% endblock %}
-        <div class="container-md pt-3 my-3 border bg-dark"><p>
-                <a class="text-white bg-dark" href="/">Home</a>
-            </p></div>
     </div>
 </body>
 </html>

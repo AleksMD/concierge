@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+           <h1>Room #{{ room.number }}</h1>
+            <p>Description of a room.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    <table class="table text-white">
+        <tr>
+            <td>Room number</td>
+            <td>Tenant first name</td>
+            <td>Tenant last name</td>
+            <td>Max guests allowed</td>
+            <td>Status</td>
+        </tr>
+        <tr>
+            <td>{{room.number}}</td>
+            <td>{{room.tenant.first_name}}</td>
+            <td>{{room.tenant.last_name}}</td>
+            <td>{{room.max_guests}}</td>
+            <td>{{room.status}}</td>
+        </tr>
+    </table>
+    </div>
+{% endblock %}

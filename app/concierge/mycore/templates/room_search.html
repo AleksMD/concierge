@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+            <h1>Search for room.</h1>
+            <p>Please fill in all neccessary fields.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    <form method="post">
+        {% csrf_token %}
+        <label>Room number</label>
+        <input type="text" name="number"></br>
+        <label>Choose room status</label>
+        <input type="radio" name="status" value="free">Free</br>
+        <input type="radio" name="status" value="engaged">Engaged</br>
+        <input type="submit"/>
+        <input type="reset"/>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+{% block header %} 
+       <div class="container-md pt-3 my-3 border bg-dark text-white">
+            <h1>Rooms</h1>
+            <p>Description of all rooms in the hostel.</p>
+        </div>
+{% endblock %}
+{% block main %}
+<div class="container-md pt-3 my-3 border bg-primary text-white">
+    
+    <table class="table text-white">
+        <tr>
+            <td>Room number</td>
+            <td>Room status</td>
+        </tr>
+        {% for room in room_list %}
+        <tr>
+            <td>{{ room.number }}</td>
+            <td>{{ room.status }}</td>
+        </tr>
+        {% empty %}
+        <p>Nothing to show!</p>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
