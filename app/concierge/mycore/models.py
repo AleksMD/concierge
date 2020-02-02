@@ -59,7 +59,8 @@ class Tenant(models.Model):
 
 
 class Room(models.Model):
-    number = models.IntegerField(validators=[MinValueValidator(1)])
+    number = models.IntegerField(validators=[MinValueValidator(1)],
+                                 unique=True)
     tenant = models.ForeignKey(Tenant,
                                null=True,
                                on_delete=models.DO_NOTHING)
@@ -74,8 +75,8 @@ class Room(models.Model):
 class Journal(models.Model):
     key_on_hands = models.DateTimeField(null=True)
     key_is_back = models.DateTimeField(null=True)
-    tenant = models.ForeignKey(Tenant, null=True, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.DO_NOTHING)
+    tenant = models.ForeignKey(Tenant, null=True, on_delete=models.DO_NOTHING)
+    room = models.OneToOneField(Room, on_delete=models.DO_NOTHING)
     comments = models.CharField(max_length=255, null=True)
     guests = models.IntegerField(default=0)
     key_is_kept = models.BooleanField(default=True)
@@ -85,6 +86,7 @@ class Journal(models.Model):
         self.key_is_back = key_transition_datetime()
         self.key_on_hands = None
         self.room.tenant = self.tenant
+        self.guests = 0
         self.room.save()
 
     def room_engaged_with_new_tenant(self):

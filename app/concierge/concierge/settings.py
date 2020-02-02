@@ -124,7 +124,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -167,4 +167,6 @@ LOGGING = {
         },
     },
 }
+FIXTURE_DIRS = [os.path.join(BASE_DIR, 'fixtures')]
+FIXTURES = ['room_initial_data.json', 'tenant_initial_data.json']
 # dictConfig(LOGGING)

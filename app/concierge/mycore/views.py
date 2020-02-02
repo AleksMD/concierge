@@ -1,4 +1,5 @@
 import os
+from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 import mycore.models as models
@@ -19,7 +20,7 @@ from mycore.forms import (JournalUpdateForm,
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INVALID_FORM_MESSAGE = ("You entered inappropriate data in form's fields."
-                        "Plase try again if neccessary.")
+                        "Please try again if neccessary.")
 
 
 def health_check(request):
@@ -56,7 +57,14 @@ class JournalView(FormView):
     success_url = f'/success/{success_message}'
 
     def form_valid(self, form):
-        form.save_journal()
+        try:
+            form.save_journal()
+        except (ValueError, IntegrityError) as err:
+            if isinstance(err, IntegrityError):
+                err = "You can't update journal with those values"
+            return HttpResponse(
+                render_to_string('error.html', {'message': err}),
+                status=400)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -89,7 +97,15 @@ class TenantCreateView(FormView):
     success_url = f'/success/{success_message}'
 
     def form_valid(self, form):
-        form.save_tenant()
+        try:
+            form.save_tenant()
+        except IntegrityError as err:
+            if 'DUPLICATE' in str(err):
+                err = 'Tenant already exists'
+            err = "You can't create tenant with those values"
+            return HttpResponse(
+                       render_to_string('error.html', {'message': err}))
+
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -128,7 +144,15 @@ class RoomCreateView(FormView):
     success_url = f'/success/{success_message}'
 
     def form_valid(self, form):
-        form.save_room()
+        try:
+            form.save_room()
+        except IntegrityError as err:
+            if 'DUPLICATE' in str(err):
+                err = 'Room already exists'
+            err = "You can't create room with those values"
+            return HttpResponse(
+                       render_to_string('error.html', {'message': err}))
+
         return super().form_valid(form)
 
     def form_invalid(self, form):

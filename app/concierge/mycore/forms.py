@@ -57,18 +57,34 @@ class JournalUpdateForm(forms.Form):
     tenant_first_name = forms.CharField()
     tenant_last_name = forms.CharField()
     room_number = forms.IntegerField()
-    guests = forms.IntegerField()
-    comments = forms.CharField()
+    guests = forms.IntegerField(required=False)
+    comments = forms.CharField(required=False)
+    clear_the_room = forms.BooleanField(required=False)
 
     def save_journal(self):
         tenant = Tenant.objects.get(first_name=self.data['tenant_first_name'],
                                     last_name=self.data['tenant_last_name'])
         room = Room.objects.get(number=self.data['room_number'])
-        journal = Journal(room=room,
-                          tenant=tenant,
-                          guests=self.data['guests'],
-                          comments=self.data['comments'])
-        journal.save()
+        if self.data.get('clear_the_room'):
+            journal = Journal.objects.filter(
+                room__number=room.number,
+                tenant__first_name=tenant.first_name,
+                tenant__last_name=tenant.last_name).all()
+            if len(journal) == 1:
+                journal = journal[0]
+                journal.tenant = None
+                journal.save()
+            elif len(journal) == 0:
+                raise ValueError("You can't clear an empty room")
+            else:
+                raise ValueError(
+                    "It seems you have provided wrong options for update!")
+        else:
+            journal = Journal(room=room,
+                              tenant=tenant,
+                              guests=int(self.data.get('guests', 0)),
+                              comments=self.data.get('comments'))
+            journal.save()
 
 
 class JournalSearchForm(forms.Form):
@@ -79,6 +95,5 @@ class JournalSearchForm(forms.Form):
     def find_journal(self):
         filter_keys = {k: v for k, v in self.data.items()
                        if v and not k.endswith('token')}
-        print(filter_keys)
         journal = Journal.objects.filter(**filter_keys).all()
         return journal
