@@ -64,12 +64,13 @@ class JournalView(FormView):
                 err = "You can't update journal with those values"
             return HttpResponse(
                 render_to_string('error.html', {'message': err}),
-                status=400)
+                status=HTTPStatus.BAD_REQUEST)
         return super().form_valid(form)
 
     def form_invalid(self, form):
         return HttpResponse(
-            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
+            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}),
+            status=HTTPStatus.BAD_REQUEST)
 
 
 class JournalSearchView(FormView):
@@ -87,7 +88,8 @@ class JournalSearchView(FormView):
 
     def form_invalid(self, form):
         return HttpResponse(
-            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
+            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}),
+            status=HTTPStatus.BAD_REQUEST)
 
 
 class TenantCreateView(FormView):
@@ -104,7 +106,8 @@ class TenantCreateView(FormView):
                 err = 'Tenant already exists'
             err = "You can't create tenant with those values"
             return HttpResponse(
-                       render_to_string('error.html', {'message': err}))
+                       render_to_string('error.html', {'message': err}),
+                       status=HTTPStatus.BAD_REQUEST)
 
         return super().form_valid(form)
 
