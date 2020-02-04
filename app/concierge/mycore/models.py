@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 
@@ -58,7 +59,7 @@ class Tenant(models.Model):
 
 
 class Room(models.Model):
-    number = models.IntegerField()
+    number = models.IntegerField(validators=[MinValueValidator(1)])
     tenant = models.ForeignKey(Tenant,
                                null=True,
                                on_delete=models.DO_NOTHING)
