@@ -1,4 +1,5 @@
 import os
+from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 import mycore.models as models
@@ -26,7 +27,7 @@ from django.contrib.auth.decorators import login_required
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INVALID_FORM_MESSAGE = ("You entered inappropriate data in form's fields."
-                        "Plase try again if neccessary.")
+                        "Please try again if neccessary.")
 
 
 def get_user():
@@ -77,12 +78,20 @@ class JournalView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     permission_required = 'mycore.create_journal'
 
     def form_valid(self, form):
-        form.save_journal()
+        try:
+            form.save_journal()
+        except (ValueError, IntegrityError) as err:
+            if isinstance(err, IntegrityError):
+                err = "You can't update journal with those values"
+            return HttpResponse(
+                render_to_string('error.html', {'message': err}),
+                status=HTTPStatus.BAD_REQUEST)
         return super().form_valid(form)
 
     def form_invalid(self, form):
         return HttpResponse(
-            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
+            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}),
+            status=HTTPStatus.BAD_REQUEST)
 
 
 class JournalSearchView(LoginRequiredMixin, FormView):
@@ -101,7 +110,8 @@ class JournalSearchView(LoginRequiredMixin, FormView):
 
     def form_invalid(self, form):
         return HttpResponse(
-            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
+            render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}),
+            status=HTTPStatus.BAD_REQUEST)
 
 
 class TenantCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
@@ -113,7 +123,16 @@ class TenantCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     permission_required = 'tenant.create_tenant'
 
     def form_valid(self, form):
-        form.save_tenant()
+        try:
+            form.save_tenant()
+        except IntegrityError as err:
+            if 'DUPLICATE' in str(err):
+                err = 'Tenant already exists'
+            err = "You can't create tenant with those values"
+            return HttpResponse(
+                       render_to_string('error.html', {'message': err}),
+                       status=HTTPStatus.BAD_REQUEST)
+
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -154,7 +173,15 @@ class RoomCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     permission_required = 'mycore.create_room'
 
     def form_valid(self, form):
-        form.save_room()
+        try:
+            form.save_room()
+        except IntegrityError as err:
+            if 'DUPLICATE' in str(err):
+                err = 'Room already exists'
+            err = "You can't create room with those values"
+            return HttpResponse(
+                       render_to_string('error.html', {'message': err}))
+
         return super().form_valid(form)
 
     def form_invalid(self, form):

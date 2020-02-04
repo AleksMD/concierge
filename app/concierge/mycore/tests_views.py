@@ -1,8 +1,12 @@
 from django.test import TestCase, Client, tag
 from datetime import date
+from django.conf import settings
 
 
 class TenantViewsTests(TestCase):
+
+    fixtures = settings.FIXTURES
+
     def setUp(self):
         self.client = Client()
 
@@ -17,7 +21,7 @@ class TenantViewsTests(TestCase):
 
     @tag('tenant_detail')
     def test_tenant_detail_view(self):
-        response = self.client.get('/tenant_detailed/1')
+        response = self.client.get('/tenant_detailed/30')
         self.assertEqual(response.status_code, 200)
 
     @tag('tenant_list')
@@ -34,6 +38,9 @@ class TenantViewsTests(TestCase):
 
 
 class RoomViewsTests(TestCase):
+
+    fixtures = settings.FIXTURES
+
     def setUp(self):
         self.client = Client()
 
@@ -46,7 +53,7 @@ class RoomViewsTests(TestCase):
 
     @tag('room_detail')
     def test_room_detail_view(self):
-        response = self.client.get('/room_detailed/1')
+        response = self.client.get('/room_detailed/100')
         self.assertEqual(response.status_code, 200)
 
     @tag('room_list')
@@ -58,4 +65,4 @@ class RoomViewsTests(TestCase):
     def test_room_search_view(self):
         response = self.client.post('/room_search/',
                                     {'number': 21})
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
