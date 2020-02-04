@@ -15,11 +15,27 @@ from mycore.forms import (JournalUpdateForm,
                           RoomCreateForm,
                           RoomSearchForm,
                           JournalSearchForm)
+from django.views.decorators.cache import cache_page
+from django.conf import settings
+from django.core.cache import cache
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.auth.decorators import login_required
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INVALID_FORM_MESSAGE = ("You entered inappropriate data in form's fields."
                         "Plase try again if neccessary.")
+
+
+def get_user():
+    ukey = 'users_all'
+    users = cache.get(ukey)
+    if not users:
+        users = get_user_model().objects.all()
+        cache.set(ukey, users, settings.CACHE_TTL)
+    return users
 
 
 def health_check(request):
@@ -30,10 +46,13 @@ def index(request):
     return HttpResponse(render_to_string('index.html', {'title': 'concierge'}))
 
 
+@cache_page(settings.CACHE_TTL)
+@login_required(login_url='/accounts/login/')
 def api_entry_page(request):
     return HttpResponse(render_to_string('api_entry.html'))
 
 
+@login_required(login_url='/accounts/login/')
 def model_serialized_view(request, model_type, model_id, format_='json'):
     try:
         model = getattr(models, model_type.capitalize())
@@ -49,11 +68,13 @@ def success(request, message='Success'):
     return HttpResponse(render_to_string('success.html', {'message': message}))
 
 
-class JournalView(FormView):
+class JournalView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+    login_url = '/accounts/login/'
     template_name = 'journal_update.html'
     form_class = JournalUpdateForm
     success_message = "Journal was successfully updated!"
     success_url = f'/success/{success_message}'
+    permission_required = 'mycore.create_journal'
 
     def form_valid(self, form):
         form.save_journal()
@@ -64,9 +85,10 @@ class JournalView(FormView):
             render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
 
 
-class JournalSearchView(FormView):
+class JournalSearchView(LoginRequiredMixin, FormView):
     template_name = 'journal_search.html'
     form_class = JournalSearchForm
+    login_url = '/accounts/login/'
 
     def form_valid(self, form):
         err_message = None
@@ -82,11 +104,13 @@ class JournalSearchView(FormView):
             render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
 
 
-class TenantCreateView(FormView):
+class TenantCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     template_name = 'tenant_create.html'
     form_class = TenantCreateForm
     success_message = "Tenant successfully created!"
     success_url = f'/success/{success_message}'
+    login_url = '/accounts/login/'
+    permission_required = 'tenant.create_tenant'
 
     def form_valid(self, form):
         form.save_tenant()
@@ -97,9 +121,10 @@ class TenantCreateView(FormView):
             render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
 
 
-class TenantSearchView(FormView):
+class TenantSearchView(LoginRequiredMixin, FormView):
     template_name = 'tenant_search.html'
     form_class = TenantSearchForm
+    login_url = '/accounts/login/'
 
     def form_valid(self, form):
         tenants = form.find_tenant()
@@ -121,11 +146,12 @@ class TenantSearchView(FormView):
             render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
 
 
-class RoomCreateView(FormView):
+class RoomCreateView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     template_name = 'room_create.html'
     form_class = RoomCreateForm
     success_message = "Room successfully created!"
     success_url = f'/success/{success_message}'
+    permission_required = 'mycore.create_room'
 
     def form_valid(self, form):
         form.save_room()
@@ -136,10 +162,11 @@ class RoomCreateView(FormView):
             render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
 
 
-class RoomSearchView(FormView):
+class RoomSearchView(LoginRequiredMixin, FormView):
     template_name = 'room_search.html'
     form_class = RoomSearchForm
     success_url = '/room_detailed'
+    login_url = '/accounts/login/'
 
     def form_valid(self, form):
         rooms = form.find_room()
@@ -161,25 +188,28 @@ class RoomSearchView(FormView):
             render_to_string('error.html', {'message': INVALID_FORM_MESSAGE}))
 
 
-class TenantDetailView(DetailView):
+class TenantDetailView(LoginRequiredMixin, DetailView):
     model = models.Tenant
     template = 'tenant_detail.html'
+    login_url = '/accounts/login/'
 
     def get_template_names(self):
         return [os.path.join(BASE_DIR, 'templates', self.template)]
 
 
-class RoomDetailView(DetailView):
+class RoomDetailView(LoginRequiredMixin, DetailView):
     model = models.Room
     template = 'room_detail.html'
+    login_url = '/accounts/login/'
 
     def get_template_names(self):
         return [os.path.join(BASE_DIR, 'templates', self.template)]
 
 
-class TenantListView(ListView):
+class TenantListView(LoginRequiredMixin, ListView):
     model = models.Tenant
     template = 'tenant_list.html'
+    login_url = '/accounts/login/'
 
     def get_queryset(self):
         tenants_id = getattr(self.request.session, 'tenants_id', None)
@@ -193,9 +223,10 @@ class TenantListView(ListView):
         return [os.path.join(BASE_DIR, 'templates', self.template)]
 
 
-class RoomListView(ListView):
+class RoomListView(LoginRequiredMixin, ListView):
     model = models.Room
     template = 'room_list.html'
+    login_url = '/accounts/login/'
 
     def get_queryset(self):
         rooms_id = getattr(self.request.session, 'rooms_id', None)
